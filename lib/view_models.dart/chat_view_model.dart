@@ -119,9 +119,10 @@ class ChatViewModel extends StateNotifier<bool> {
         (r) => null);
   }
 
-  void addReactionToMessage(
-      String messageId, String chatId, String reaction, Map<String, List<String>> reactions) async {
-    _chatRepository.addReactionToMessage(messageId, chatId, reaction,reactions);
+  void addReactionToMessage(String messageId, String chatId, String reaction,
+      Map<String, List<String>> reactions) async {
+    _chatRepository.addReactionToMessage(
+        messageId, chatId, reaction, reactions);
   }
 
   Future<void> sendVoiceMessage(String chatId, BuildContext context) async {
@@ -150,8 +151,7 @@ class ChatViewModel extends StateNotifier<bool> {
     if (hasPermission) {
       final tempDir = await _getTemporaryDirectory();
 
-      await _recorder.start(const RecordConfig(),
-          path: '${tempDir?.path}/$id.acc');
+      await _recorder.start(const RecordConfig(), path: '$tempDir/$id.acc');
       state = true;
     }
   }
@@ -165,9 +165,9 @@ class ChatViewModel extends StateNotifier<bool> {
     return null;
   }
 
-  Future<Directory?> _getTemporaryDirectory() async {
-    final Directory? dir = await getDownloadsDirectory();
-    return dir;
+  Future<String> _getTemporaryDirectory() async {
+    final dir = await getTemporaryDirectory();
+    return dir.path;
   }
 
   Future<bool> isRecording() async {
