@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "623143794290",
+    "project_id": "chat-app-96b0c",
+    "storage_bucket": "chat-app-96b0c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:623143794290:android:e75e5656c022d506c3f4eb",
+        "android_client_info": {
+          "package_name": "com.salman.chat_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkjl2JbI9QC5Um5YeFuUEbtMftydwVxYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
