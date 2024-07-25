@@ -93,6 +93,7 @@ class ChatBubble extends ConsumerWidget {
 void _showReactionPicker(BuildContext context, String messageId, String chatId,
     WidgetRef ref, MessageModel messageModel) {
   showModalBottomSheet(
+    backgroundColor: ColorConstants.messageTextFieldColor,
     context: context,
     builder: (context) {
       return Row(
@@ -102,7 +103,7 @@ void _showReactionPicker(BuildContext context, String messageId, String chatId,
               icon: Text(reaction, style: const TextStyle(fontSize: 24)),
               onPressed: () async {
                 ref.read(chatViewModelProvider.notifier).addReactionToMessage(
-                    messageId, chatId, reaction, messageModel.reactions);
+                    messageId, chatId, reaction, );
                 Navigator.pop(context);
               });
         }).toList(),

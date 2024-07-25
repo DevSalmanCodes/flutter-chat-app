@@ -123,7 +123,7 @@ class _ChatViewState extends ConsumerState<ChatView> {
                 flex: 6,
                 child: messagesAsyncValue.when(
                     data: (data) {
-                      data.sort((a, b) => a.timestamp!.compareTo(b.timestamp!));
+                      data.sort((a, b) => a.timestamp.compareTo(b.timestamp));
                       _jumpToLatestMessage();
                       return ListView.builder(
                           controller: _scrollController,
@@ -132,8 +132,8 @@ class _ChatViewState extends ConsumerState<ChatView> {
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             final message = data[index];
-                           
-                            final messageDate = message.timestamp!.toDate();
+
+                            final messageDate = message.timestamp.toDate();
                             bool showDateHeader = false;
 
                             // Display the date header if it's the first message of the day or if the previous message was from a different day
@@ -141,7 +141,7 @@ class _ChatViewState extends ConsumerState<ChatView> {
                               showDateHeader = true;
                             } else {
                               final previousMessageDate =
-                                  data[index - 1].timestamp!.toDate();
+                                  data[index - 1].timestamp.toDate();
                               if (messageDate.day != previousMessageDate.day ||
                                   messageDate.month !=
                                       previousMessageDate.month ||
@@ -154,7 +154,7 @@ class _ChatViewState extends ConsumerState<ChatView> {
                               children: [
                                 if (showDateHeader)
                                   Text(
-                                    formatDate(message.timestamp!),
+                                    formatDate(message.timestamp),
                                     style: TextStyleConstants.semiBoldTextStyle,
                                   ),
                                 ChatBubble(

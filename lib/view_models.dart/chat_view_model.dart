@@ -108,7 +108,7 @@ class ChatViewModel extends StateNotifier<bool> {
         id: messageId,
         senderId: _auth.currentUser!.uid,
         content: '',
-        timestamp: null,
+        timestamp: Timestamp.now(),
         status: 'sent',
         type: 'image',
         contentUrl: url ?? '',
@@ -120,9 +120,9 @@ class ChatViewModel extends StateNotifier<bool> {
   }
 
   void addReactionToMessage(String messageId, String chatId, String reaction,
-      Map<String, List<String>> reactions) async {
+     ) async {
     _chatRepository.addReactionToMessage(
-        messageId, chatId, reaction, reactions);
+        messageId, chatId, reaction);
   }
 
   Future<void> sendVoiceMessage(String chatId, BuildContext context) async {
@@ -139,9 +139,10 @@ class ChatViewModel extends StateNotifier<bool> {
           status: 'sent',
           type: 'voice',
           contentUrl: url ?? '',
-          reactions: {});
+          reactions: {},
+          timestamp: Timestamp.now());
       await _chatRepository.sendVoiceMessage(
-          chatId, voicePath, messageModel, context);
+          chatId, uid, voicePath, messageModel, context);
     }
   }
 

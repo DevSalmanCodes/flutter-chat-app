@@ -2,7 +2,6 @@ import 'package:chat_app/constants/color_constants.dart';
 import 'package:chat_app/utils/routes/app_routes.dart';
 import 'package:chat_app/view_models.dart/auth_view_model.dart';
 import 'package:chat_app/views/auth/login_view.dart';
-import 'package:chat_app/views/auth/sign_up_view.dart';
 import 'package:chat_app/views/home/home_view.dart';
 import 'package:chat_app/widgets/loader.dart';
 import 'package:firebase_core/firebase_core.dart';

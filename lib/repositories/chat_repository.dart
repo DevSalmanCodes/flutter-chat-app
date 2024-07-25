@@ -16,12 +16,19 @@ abstract class IChatRepository {
       String chaId, MessageModel messageModel, String docId);
   FutureEitherVoid sendImageMessage(
       String chatId, MessageModel messageModel, String docId);
+  FutureEitherVoid sendVoiceMessage(
+    String chatId,
+    String meessageId,
+    String voicePath,
+    MessageModel messageModel,
+    BuildContext context,
+  );
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getAllChats(
       String uid);
 
   FutureEitherVoid markAsReadMessages(String chaId);
-  FutureVoid addReactionToMessage(String messageId, String chatId,
-      String reaction, Map<String, List<String>> reactions);
+  FutureVoid addReactionToMessage(
+      String messageId, String chatId, String reaction);
 }
 
 final chatRepositoryProvider = Provider((ref) => ChatRepository(
@@ -142,21 +149,21 @@ class ChatRepository implements IChatRepository {
   }
 
   @override
-  FutureVoid addReactionToMessage(String messageId, String chatId,
-      String reaction, Map<String, List<String>> reactions) async {
-    // final docRef = _firestore
-    //     .collection('chats')
-    //     .doc(chatId)
-    //     .collection('messages')
-    //     .doc(messageId);
-    // final doc = await docRef.get();
-    // final docData = doc.data();
-    // final reactions = (docData!['reactions'] as Map<String, dynamic>).map(
-    //   (key, value) => MapEntry(
-    //     key,
-    //     List<String>.from(value as List<dynamic>),
-    //   ),
-    // );
+  FutureVoid addReactionToMessage(
+      String messageId, String chatId, String reaction) async {
+    final docRef = _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(messageId);
+    final doc = await docRef.get();
+    final docData = doc.data();
+    final reactions = (docData!['reactions'] as Map<String, dynamic>).map(
+      (key, value) => MapEntry(
+        key,
+        List<String>.from(value as List<dynamic>),
+      ),
+    );
     final currentUserUid = _auth.currentUser!.uid;
     // Check if the reaction is already exists
     if (reactions.containsKey(reaction)) {
@@ -165,7 +172,7 @@ class ChatRepository implements IChatRepository {
       } else {
         reactions[reaction]!.remove(currentUserUid);
         // After removing the user id check if the current reaction list is empty if empty remove the reaction also
-        if (reactions[reaction]!.isEmpty) {
+        if (_isListEmpty(reactions[reaction]!)) {
           reactions.remove(reaction);
         }
       }
@@ -176,7 +183,7 @@ class ChatRepository implements IChatRepository {
 
         if (currentValue.contains(currentUserUid)) {
           currentValue.remove(currentUserUid);
-          if (currentValue.isEmpty) {
+          if (_isListEmpty(currentValue)) {
             final currentKey = reactions.keys.elementAt(i);
             reactions.remove(currentKey);
           }
@@ -185,17 +192,14 @@ class ChatRepository implements IChatRepository {
 
       reactions[reaction] = [currentUserUid];
     }
-    await _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .doc(messageId)
-        .update({'reactions': reactions});
+    docRef.update({'reactions': reactions});
     reactions.clear();
   }
 
+  @override
   FutureEitherVoid sendVoiceMessage(
     String chatId,
+    String meessageId,
     String voicePath,
     MessageModel messageModel,
     BuildContext context,
@@ -205,11 +209,16 @@ class ChatRepository implements IChatRepository {
           .collection('chats')
           .doc(chatId)
           .collection('messages')
-          .add(messageModel.toMap());
+          .doc(meessageId)
+          .set(messageModel.toMap());
       _updateLastMessage(chatId, 'Voice Message');
       return right(null);
     } on FirebaseException catch (e, st) {
       return left(Failure(e.message, st.toString()));
     }
+  }
+
+  bool _isListEmpty(List reactionList) {
+    return reactionList.isEmpty;
   }
 }

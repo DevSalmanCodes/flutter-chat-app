@@ -4,7 +4,7 @@ class MessageModel {
   final String id;
   final String senderId;
   final String content;
-  final Timestamp? timestamp;
+  final Timestamp timestamp;
   final String status; // 'sent', 'delivered', 'read'
   final String type;
   final String contentUrl;
@@ -14,7 +14,7 @@ class MessageModel {
     required this.id,
     required this.senderId,
     required this.content,
-    this.timestamp,
+   required this.timestamp,
     required this.status,
     required this.type,
     required this.contentUrl,
@@ -26,7 +26,7 @@ class MessageModel {
       'id': id,
       'senderId': senderId,
       'content': content,
-      'timestamp': timestamp ?? FieldValue.serverTimestamp(),
+      'timestamp': timestamp,
       'status': status,
       'type': type,
       'contentUrl': contentUrl,
