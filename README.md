@@ -1,47 +1,28 @@
-📱 Flutter Chat App
+# Flutter Twitter Clone
+
 A dynamic chat application built with Flutter, Firebase, and Riverpod. Experience real-time messaging, user authentication, media sharing, and more. Perfect for learning Flutter essentials and chat app development.
 
-🎥 Video Link: Watch on LinkedIn
+🎥 **Video Link:** [Watch on LinkedIn](https://www.linkedin.com/posts/salman-ahmad-41342b258_flutter-firebase-provider-activity-7147911304534458368-du1b?utm_source=share&utm_medium=member_desktop)
 
-⭐ Features
-User Authentication: Secure sign-in and registration.
-Online/Offline Status: Know when your contacts are online.
-Message Status Indicators: Sent and seen.
-Last Seen Information: Check when your contacts were last active.
-Real-time Messaging: Stay connected with live messages.
-Media Sharing: Send text, image, and voice messages.
-Message Reactions: React to messages with emojis.
-User Search: Easily find and chat with users.
-⚙️ Getting Started
-Clone the repository:
+## Features:
+- **User Authentication:** Sign up, log in, log out.
+- **Online/offline status**.
+- **Message status indicators:** Sent, seen.
+- **Last seen information**.
+- **Real-time messaging** with Firebase Firestore.
+- **Send text, image, and voice messages**.
+- **Add reactions to messages**.
+- **Search for users**.
 
-bash
-Copy code
-git clone https://github.com/your-username/chat-app.git
-Navigate to the project directory:
+## Getting Started:
+1. Clone the repository: `git clone https://github.com/DevSalmanCodes/flutter-chat-app.git`
+2. Navigate to the project directory: `cd flutter-chat-app`
+3. Follow the setup instructions in [README.md](./README.md).
 
-bash
-Copy code
-cd chat-app
-Install dependencies:
+## Contribute:
+Contributions are welcome! Check out our [Contribution Guidelines](CONTRIBUTING.md).
 
-bash
-Copy code
-flutter pub get
-Set up Firebase:
+## Feedback:
+Open an issue [here](https://github.com/DevSalmanCodes/flutter-chat-app/issues) for feedback, bug reports, or feature requests.
 
-Follow the official guide to add Firebase to your Flutter project.
-Place your google-services.json (for Android) and GoogleService-Info.plist (for iOS) in the respective directories as instructed.
-Run the app:
-
-bash
-Copy code
-flutter run
-🤝 Contribute
-Contributions are welcome! Check out our Contribution Guidelines.
-
-📝 Feedback
-Open an issue here for feedback, bug reports, or feature requests.
-
-Happy Chatting! 🚀
-
+Happy Fluttering! 🚀
