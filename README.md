@@ -1,4 +1,4 @@
-# Flutter Twitter Clone
+# Flutter Chat App
 
 A dynamic chat application built with Flutter, Firebase, and Riverpod. Experience real-time messaging, user authentication, media sharing, and more. Perfect for learning Flutter essentials and chat app development.
 
