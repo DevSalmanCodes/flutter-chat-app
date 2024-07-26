@@ -6,4 +6,5 @@ class RouteNames {
   static const String chatView = '/chatView';
   static const String searchView='/searchView';
   static const String photoView='/photoView';
+  static const String splashView='/splashView';
 }

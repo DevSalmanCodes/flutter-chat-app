@@ -4,6 +4,7 @@ import 'package:chat_app/views/chat/chat_list_view.dart';
 import 'package:chat_app/views/home/home_view.dart';
 import 'package:chat_app/views/photo_view.dart';
 import 'package:chat_app/views/search_view.dart';
+import 'package:chat_app/views/splash_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_model.dart';
@@ -33,14 +34,17 @@ class AppRoutes {
         return MaterialPageRoute(builder: (context) => const LoginView());
       case RouteNames.signUp:
         return MaterialPageRoute(builder: (context) => const SignUpView());
+      case RouteNames.splashView:
+        return MaterialPageRoute(builder: (context) => const SplashView());
       case RouteNames.searchView:
         return MaterialPageRoute(builder: (context) => const SearchView());
-      case RouteNames.photoView :
-        if(settings.arguments is String){
-          final args=settings.arguments as String;
-          return MaterialPageRoute(builder: (context) =>  PhotoView(imageUrl: args));
-
-        } return _errorRoute(settings.name);
+      case RouteNames.photoView:
+        if (settings.arguments is String) {
+          final args = settings.arguments as String;
+          return MaterialPageRoute(
+              builder: (context) => PhotoView(imageUrl: args));
+        }
+        return _errorRoute(settings.name);
       default:
         return _errorRoute(settings.name);
     }

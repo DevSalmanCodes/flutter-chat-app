@@ -1,9 +1,6 @@
 import 'package:chat_app/constants/color_constants.dart';
 import 'package:chat_app/utils/routes/app_routes.dart';
-import 'package:chat_app/view_models.dart/auth_view_model.dart';
-import 'package:chat_app/views/auth/login_view.dart';
-import 'package:chat_app/views/home/home_view.dart';
-import 'package:chat_app/widgets/loader.dart';
+import 'package:chat_app/utils/routes/route_names.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,19 +16,14 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends ConsumerStatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  ConsumerState<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends ConsumerState<MyApp> {
-  @override
   Widget build(BuildContext context) {
-    final userStateAsyncValue = ref.watch(authStateChangesProvider);
     return MaterialApp(
         onGenerateRoute: AppRoutes.onGenerateRoute,
+        initialRoute: RouteNames.splashView,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
@@ -41,10 +33,6 @@ class _MyAppState extends ConsumerState<MyApp> {
           indicatorColor: ColorConstants.whiteColor,
           hintColor: ColorConstants.whiteColor,
         ),
-        home: userStateAsyncValue.when(
-            data: (value) =>
-                value != null ? const HomeView() : const LoginView(),
-            error: (e, statckTrace) => Text(e.toString()),
-            loading: () => const Loader()));
+      );
   }
 }

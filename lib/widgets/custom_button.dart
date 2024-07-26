@@ -4,11 +4,12 @@ import '../constants/color_constants.dart';
 import '../constants/size_constants.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({super.key, this.width, this.height, required this.child, this.onTap});
-  final double? width;
+   final double? width;
   final double? height;
   final Widget child;
   final VoidCallback? onTap;
+  const CustomButton({super.key, this.width, this.height, required this.child, this.onTap});
+ 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

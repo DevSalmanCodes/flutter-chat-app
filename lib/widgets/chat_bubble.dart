@@ -12,6 +12,10 @@ import '../constants/size_constants.dart';
 import '../constants/text_style_constants.dart';
 
 class ChatBubble extends ConsumerWidget {
+  final bool isSender;
+  final MessageModel messageModel;
+  final String currentUseUid;
+  final String chatId;
   const ChatBubble({
     super.key,
     required this.isSender,
@@ -19,10 +23,6 @@ class ChatBubble extends ConsumerWidget {
     required this.currentUseUid,
     required this.chatId,
   });
-  final bool isSender;
-  final MessageModel messageModel;
-  final String currentUseUid;
-  final String chatId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -98,12 +98,22 @@ void _showReactionPicker(BuildContext context, String messageId, String chatId,
     builder: (context) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: ['👍', '❤️', '😂', '😮', '😢', '👏'].map((reaction) {
+        children: [
+          '👍',
+          '❤️',
+          '😂',
+          '😮',
+          '😢',
+          '😡',
+        ].map((reaction) {
           return IconButton(
               icon: Text(reaction, style: const TextStyle(fontSize: 24)),
               onPressed: () async {
                 ref.read(chatViewModelProvider.notifier).addReactionToMessage(
-                    messageId, chatId, reaction, );
+                      messageId,
+                      chatId,
+                      reaction,
+                    );
                 Navigator.pop(context);
               });
         }).toList(),

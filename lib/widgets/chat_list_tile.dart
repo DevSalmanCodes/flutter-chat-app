@@ -5,6 +5,11 @@ import '../constants/size_constants.dart';
 import '../constants/text_style_constants.dart';
 
 class ChatListTile extends StatelessWidget {
+  final String title;
+  final Widget subtitleText;
+  final String profilePic;
+  final bool isOnline;
+  final Function()? onTap;
   const ChatListTile(
       {super.key,
       required this.title,
@@ -12,11 +17,7 @@ class ChatListTile extends StatelessWidget {
       required this.profilePic,
       required this.isOnline,
       required this.onTap});
-  final String title;
-  final Widget subtitleText;
-  final String profilePic;
-  final bool isOnline;
-  final Function()? onTap;
+  
 
   static const largeRadius = SizeConstants.largeRadius;
   static const smallPadding = SizeConstants.smallPadding;

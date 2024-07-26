@@ -16,7 +16,6 @@ class ChatListView extends ConsumerWidget {
   void _onNavigateToChatView(
     String chatId,
     UserModel userModel,
-    WidgetRef ref,
     BuildContext context,
   ) async {
     if (context.mounted) {
@@ -57,7 +56,6 @@ class ChatListView extends ConsumerWidget {
                             onTap: () => _onNavigateToChatView(
                               chat.id,
                               data,
-                              ref,
                               context,
                             ),
                           ),
