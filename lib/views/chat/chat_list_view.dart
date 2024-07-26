@@ -8,25 +8,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../widgets/chat_list_tile.dart';
-import '../../constants/size_constants.dart';
 import '../../view_models.dart/user_view_model.dart';
 
 class ChatListView extends ConsumerWidget {
   const ChatListView({super.key});
 
-  static const largeRadius = SizeConstants.largeRadius;
-  static const smallPadding = SizeConstants.smallPadding;
-
-  void _onGetOrCreateChat(
-    String userUid,
-    String currentUserUid,
+  void _onNavigateToChatView(
+    String chatId,
     UserModel userModel,
     WidgetRef ref,
     BuildContext context,
   ) async {
-    final chatRef = ref.watch(chatViewModelProvider.notifier);
-    final chatId =
-        await chatRef.getOrCreateChat(userUid, currentUserUid, context);
     if (context.mounted) {
       Navigator.pushNamed(context, RouteNames.chatView, arguments: {
         'chatId': chatId,
@@ -47,11 +39,9 @@ class ChatListView extends ConsumerWidget {
                 itemCount: data.length,
                 itemBuilder: (context, index) {
                   final chat = data[index];
-                  final currentUser = chat.participantIds.firstWhere(
-                      (id) => id == currentUserUid,
-                      orElse: () => 'Something went wrong');
+
                   final otherUser = chat.participantIds.firstWhere(
-                      (id) => id != currentUser,
+                      (id) => id != currentUserUid,
                       orElse: () => 'Something went wrong');
                   return ref.watch(userDetailsProvider(otherUser)).when(
                       data: (data) => ChatListTile(
@@ -64,9 +54,8 @@ class ChatListView extends ConsumerWidget {
                                 ? data.profilePic!
                                 : defaultProfilePic,
                             isOnline: data.isOnline,
-                            onTap: () => _onGetOrCreateChat(
-                              otherUser,
-                              currentUser,
+                            onTap: () => _onNavigateToChatView(
+                              chat.id,
                               data,
                               ref,
                               context,
