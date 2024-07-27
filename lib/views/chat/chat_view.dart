@@ -52,7 +52,7 @@ class _ChatViewState extends ConsumerState<ChatView> {
           .watch(chatViewModelProvider.notifier)
           .sendImageMessage(widget.chatId, _file!, context);
     } else {
-      if (_controller.text.isNotEmpty) {
+      if (message.isNotEmpty) {
         ref
             .watch(chatViewModelProvider.notifier)
             .sendTextMessage(widget.chatId, message, context);
@@ -119,119 +119,115 @@ class _ChatViewState extends ConsumerState<ChatView> {
             SizedBox(
               height: SizeConstants.height(context) * 0.05,
             ),
-            Expanded(
-                flex: 6,
-                child: messagesAsyncValue.when(
-                    data: (data) {
-                      data.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-                      _jumpToLatestMessage();
-                      return ListView.builder(
-                          controller: _scrollController,
-                          keyboardDismissBehavior:
-                              ScrollViewKeyboardDismissBehavior.onDrag,
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            final message = data[index];
+            messagesAsyncValue.when(
+                data: (data) {
+                  data.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+                  _jumpToLatestMessage();
+                  return Expanded(
+                    flex: 6,
+                    child: ListView.builder(
+                        controller: _scrollController,
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          final message = data[index];
+                          final messageDate = message.timestamp.toDate();
+                          bool showDateHeader = false;
 
-                            final messageDate = message.timestamp.toDate();
-                            bool showDateHeader = false;
-
-                            // Display the date header if it's the first message of the day or if the previous message was from a different day
-                            if (index == 0) {
+                          // Display the date header if it's the first message of the day or if the previous message was from a different day
+                          if (index == 0) {
+                            showDateHeader = true;
+                          } else {
+                            final previousMessageDate =
+                                data[index - 1].timestamp.toDate();
+                            if (messageDate.day != previousMessageDate.day ||
+                                messageDate.month !=
+                                    previousMessageDate.month ||
+                                messageDate.year != previousMessageDate.year) {
                               showDateHeader = true;
-                            } else {
-                              final previousMessageDate =
-                                  data[index - 1].timestamp.toDate();
-                              if (messageDate.day != previousMessageDate.day ||
-                                  messageDate.month !=
-                                      previousMessageDate.month ||
-                                  messageDate.year !=
-                                      previousMessageDate.year) {
-                                showDateHeader = true;
-                              }
                             }
-                            return Column(
-                              children: [
-                                if (showDateHeader)
-                                  Text(
-                                    formatDate(message.timestamp),
-                                    style: TextStyleConstants.semiBoldTextStyle,
-                                  ),
-                                ChatBubble(
-                                  isSender: message.senderId == currentUserUid,
-                                  messageModel: message,
-                                  currentUseUid: currentUserUid,
-                                  chatId: widget.chatId,
+                          }
+                          return Column(
+                            children: [
+                              if (showDateHeader)
+                                Text(
+                                  formatDate(message.timestamp),
+                                  style: TextStyleConstants.semiBoldTextStyle,
                                 ),
-                              ],
-                            );
-                          });
-                    },
-                    error: (e, st) => Text(e.toString()),
-                    loading: () => const Loader())),
+                              ChatBubble(
+                                isSender: message.senderId == currentUserUid,
+                                messageModel: message,
+                                currentUseUid: currentUserUid,
+                                chatId: widget.chatId,
+                              ),
+                            ],
+                          );
+                        }),
+                  );
+                },
+                error: (e, st) => Text(e.toString()),
+                loading: () => const Loader()),
           ],
         ),
       ),
       bottomNavigationBar: Container(
         margin:
             EdgeInsets.only(bottom: keyboardSize + 8.0, right: 8.0, left: 8.0),
-        child: Expanded(
-          child: Container(
-            constraints: const BoxConstraints(maxHeight: 200),
-            padding: const EdgeInsets.all(SizeConstants.smallPadding),
-            decoration: BoxDecoration(
-                color: ColorConstants.messageTextFieldColor,
-                borderRadius:
-                    BorderRadius.circular(SizeConstants.smallRadius + 4.0)),
-            child: Row(
-              children: [
-                IconButton(
-                    onPressed: _onPickImage,
-                    icon: const Icon(
-                      Icons.image,
-                      color: ColorConstants.whiteColor,
-                    )),
-                GestureDetector(
-                  onLongPress: () {
-                    if (context.mounted) chatRef.startRecording(context);
-                  },
-                  child: const Icon(
-                    Icons.mic,
-                  ),
-                  onLongPressEnd: (value) {
-                    if (context.mounted) {
-                      chatRef.sendVoiceMessage(widget.chatId, context);
-                    }
-                  },
+        child: Container(
+          constraints: const BoxConstraints(maxHeight: 200),
+          padding: const EdgeInsets.all(SizeConstants.smallPadding),
+          decoration: BoxDecoration(
+              color: ColorConstants.messageTextFieldColor,
+              borderRadius:
+                  BorderRadius.circular(SizeConstants.smallRadius + 4.0)),
+          child: Row(
+            children: [
+              IconButton(
+                  onPressed: _onPickImage,
+                  icon: const Icon(
+                    Icons.image,
+                    color: ColorConstants.whiteColor,
+                  )),
+              GestureDetector(
+                onLongPress: () {
+                  if (context.mounted) chatRef.startRecording(context);
+                },
+                child: const Icon(
+                  Icons.mic,
                 ),
-                Expanded(
-                  child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: SizeConstants.smallPadding + 4.0),
-                      child: _file == null
-                          ? TextFormField(
-                              readOnly: recordingState,
-                              style: const TextStyle(
-                                  color: ColorConstants.whiteColor),
-                              controller: _controller,
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: recordingState == true
-                                      ? 'Recording...'
-                                      : "Message",
-                                  hintStyle:
-                                      TextStyleConstants.regularTextStyle),
-                            )
-                          : Image.file(File(_file!.path))),
-                ),
-                IconButton(
-                    onPressed: _onSendMessage,
-                    icon: const Icon(
-                      Icons.send,
-                      color: Color(0XFF9398A7),
-                    ))
-              ],
-            ),
+                onLongPressEnd: (value) {
+                  if (context.mounted) {
+                    chatRef.sendVoiceMessage(widget.chatId, context);
+                  }
+                },
+              ),
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: SizeConstants.smallPadding + 4.0),
+                    child: _file == null
+                        ? TextFormField(
+                            readOnly: recordingState,
+                            style: const TextStyle(
+                                color: ColorConstants.whiteColor),
+                            controller: _controller,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: recordingState == true
+                                    ? 'Recording...'
+                                    : "Message",
+                                hintStyle: TextStyleConstants.regularTextStyle),
+                          )
+                        : Image.file(File(_file!.path))),
+              ),
+              IconButton(
+                  onPressed: _onSendMessage,
+                  icon: const Icon(
+                    Icons.send,
+                    color: Color(0XFF9398A7),
+                  ))
+            ],
           ),
         ),
       ),

@@ -38,13 +38,13 @@ class ChatBubble extends ConsumerWidget {
                 children: [
                   Container(
                     constraints: BoxConstraints(
-                        maxWidth: MediaQuery.sizeOf(context).width / 1.5),
+                        maxWidth: MediaQuery.sizeOf(context).width - 30),
                     alignment: Alignment.topRight,
                     margin: EdgeInsets.only(
                         top: 10.0,
                         bottom: 10.0,
                         left:
-                            isSender ? SizeConstants.smallPadding + 70.0 : 6.0,
+                            isSender ? SizeConstants.smallPadding + 60.0 : 6.0,
                         right:
                             isSender ? 6.0 : SizeConstants.smallPadding + 10),
                     padding:
@@ -57,16 +57,22 @@ class ChatBubble extends ConsumerWidget {
                     child: messageModel.type == 'text'
                         ? _buildRow(messageModel, currentUseUid)
                         : messageModel.type == 'voice'
-                            ? SizedBox(
-                                width: 200,
-                                child: VoiceMessageView(
-                                    controller: VoiceController(
-                                        audioSrc: messageModel.contentUrl,
-                                        maxDuration: const Duration(minutes: 5),
-                                        isFile: false,
-                                        onComplete: () {},
-                                        onPause: () {},
-                                        onPlaying: () {})),
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  VoiceMessageView(
+                                      controller: VoiceController(
+                                          audioSrc: messageModel.contentUrl,
+                                          maxDuration:
+                                              const Duration(minutes: 5),
+                                          isFile: false,
+                                          onComplete: () {},
+                                          onPause: () {},
+                                          onPlaying: () {})),
+                                  if (messageModel.senderId == currentUseUid)
+                                    ..._messageStatusWidget(messageModel,
+                                        height: 4.0)
+                                ],
                               )
                             : _buildColumn(
                                 context, messageModel, currentUseUid),
@@ -138,16 +144,8 @@ Widget _buildColumn(
           placeholder: (context, url) => const Loader(),
         ),
       ),
-      if (messageModel.senderId == currentUserUid) ...[
-        const SizedBox(
-          height: 8.0,
-        ),
-        Icon(
-          messageModel.status == 'sent' ? Icons.done : Icons.done_all,
-          size: 15.0,
-          color: messageModel.status == 'seen' ? Colors.blue : null,
-        ),
-      ]
+      if (messageModel.senderId == currentUserUid)
+        ..._messageStatusWidget(messageModel, height: 8.0)
     ],
   );
 }
@@ -161,16 +159,23 @@ Widget _buildRow(MessageModel messageModel, String currentUserUid) {
           style: TextStyleConstants.regularTextStyle,
         ),
       ),
-      if (messageModel.senderId == currentUserUid) ...[
-        const SizedBox(
-          width: 8.0,
-        ),
-        Icon(
-          messageModel.status == 'sent' ? Icons.done : Icons.done_all,
-          size: 15.0,
-          color: messageModel.status == 'seen' ? Colors.blue : null,
-        ),
-      ]
+      if (messageModel.senderId == currentUserUid)
+        ..._messageStatusWidget(messageModel, width: 8.0)
     ],
   );
+}
+
+List<Widget> _messageStatusWidget(MessageModel messageModel,
+    {double? height, double? width}) {
+  return [
+    SizedBox(
+      height: height,
+      width: width,
+    ),
+    Icon(
+      messageModel.status == 'sent' ? Icons.done : Icons.done_all,
+      size: 15.0,
+      color: messageModel.status == 'seen' ? Colors.blue : null,
+    ),
+  ];
 }

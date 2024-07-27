@@ -22,17 +22,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        onGenerateRoute: AppRoutes.onGenerateRoute,
-        initialRoute: RouteNames.splashView,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          appBarTheme: const AppBarTheme(
-              iconTheme: IconThemeData(color: ColorConstants.whiteColor)),
-          iconTheme: const IconThemeData(color: ColorConstants.whiteColor),
-          scaffoldBackgroundColor: ColorConstants.scaffoldBackgroundColor,
-          indicatorColor: ColorConstants.whiteColor,
-          hintColor: ColorConstants.whiteColor,
-        ),
-      );
+      onGenerateRoute: AppRoutes.onGenerateRoute,
+      initialRoute: RouteNames.splashView,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+            iconTheme: IconThemeData(color: ColorConstants.whiteColor)),
+        iconTheme: const IconThemeData(color: ColorConstants.whiteColor),
+        scaffoldBackgroundColor: ColorConstants.scaffoldBackgroundColor,
+        indicatorColor: ColorConstants.whiteColor,
+        hintColor: ColorConstants.whiteColor,
+      ),
+    );
   }
 }
