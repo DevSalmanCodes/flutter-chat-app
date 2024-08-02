@@ -12,7 +12,7 @@ abstract class IUserRepository {
   FutureEitherVoid storeUserData(UserModel userModel);
   FutureVoid changeUserStatus(bool status);
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getAllUsers();
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserById(String id);
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserById(String id);
 }
 
 final userRepositoryProvider = Provider((ref) => UserRepository(
@@ -39,8 +39,8 @@ class UserRepository implements IUserRepository {
 
   @override
   FutureVoid changeUserStatus(bool status) async {
-    final user = _auth.currentUser?.uid;
-    await _firestore.collection('users').doc(user).update({
+    final userUid = _auth.currentUser!.uid;
+    await _firestore.collection('users').doc(userUid).update({
       'isOnline': status,
     });
   }
@@ -52,8 +52,8 @@ class UserRepository implements IUserRepository {
   }
 
   @override
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserById(String id) async {
-    final res = await _firestore.collection('users').doc(id).get();
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserById(String id) {
+    final res = _firestore.collection('users').doc(id).snapshots();
     return res;
   }
 

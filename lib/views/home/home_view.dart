@@ -1,7 +1,7 @@
 import 'package:chat_app/utils/routes/route_names.dart';
 import 'package:chat_app/view_models.dart/auth_view_model.dart';
 import 'package:chat_app/view_models.dart/user_view_model.dart';
-import 'package:chat_app/views/chat/chat_list_view.dart';
+import 'package:chat_app/widgets/chat_list.dart';
 import 'package:chat_app/widgets/custom_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +43,7 @@ class _HomeViewState extends ConsumerState<HomeView>
   }
 
   void _onSignOut() {
-    ref.read(authViewModelProvider.notifier).signOut();
+    ref.read(authViewModelProvider.notifier).signOut(context);
   }
 
   void _onNavigateToSearch() {
@@ -72,7 +72,7 @@ class _HomeViewState extends ConsumerState<HomeView>
       ]),
       body: const SingleChildScrollView(
         physics: BouncingScrollPhysics(),
-        child: ChatListView(),
+        child: ChatList(),
       ),
     );
   }

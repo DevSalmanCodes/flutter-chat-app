@@ -1,6 +1,5 @@
 import 'package:chat_app/utils/routes/route_names.dart';
 import 'package:chat_app/views/auth/sign_up_view.dart';
-import 'package:chat_app/views/chat/chat_list_view.dart';
 import 'package:chat_app/views/home/home_view.dart';
 import 'package:chat_app/views/photo_view.dart';
 import 'package:chat_app/views/search_view.dart';
@@ -16,8 +15,7 @@ class AppRoutes {
     switch (settings.name) {
       case RouteNames.home:
         return MaterialPageRoute(builder: (context) => const HomeView());
-      case RouteNames.chatListView:
-        return MaterialPageRoute(builder: (context) => const ChatListView());
+     
       case RouteNames.chatView:
         if (settings.arguments is Map<String, dynamic>) {
           final args = settings.arguments as Map<String, dynamic>;

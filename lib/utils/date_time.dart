@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 // Function to format the Firestore timestamp into a readable string
-String formatDate(Timestamp timestamp) {
+String formatDate(DateTime timestamp) {
   DateTime now = DateTime.now();
-  DateTime dateTime = timestamp.toDate();
+  DateTime dateTime = timestamp;
   Duration diff = now.difference(dateTime);
 
   if (diff.inDays == 0 && now.day == dateTime.day) {

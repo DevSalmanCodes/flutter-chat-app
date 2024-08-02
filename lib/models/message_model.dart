@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MessageModel {
   final String id;
   final String senderId;
   final String content;
-  final Timestamp timestamp;
-  final String status; // 'sent', 'delivered', 'read'
+  final String timestamp;
+  final String status; // 'sent', 'read'
   final String type;
   final String contentUrl;
   final Map<String, List<String>> reactions;
@@ -39,7 +38,7 @@ class MessageModel {
       id: map['id'] as String,
       senderId: map['senderId'] as String,
       content: map['content'] as String,
-      timestamp: map['timestamp'] as Timestamp,
+      timestamp: map['timestamp'] as String,
       status: map['status'] as String,
       type: map['type'] as String,
       contentUrl: map['contentUrl'] as String,

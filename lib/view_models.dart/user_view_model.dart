@@ -10,14 +10,15 @@ final getAllUsersProvider = StreamProvider((ref) {
   return users.getAllUsers();
 });
 
-final userDetailsProvider = FutureProvider.family<UserModel,String>(
+final userDetailsProvider = StreamProvider.family<UserModel, String>(
     (ref, String id) => ref.watch(userViewModelProvider).getUserById(id));
 
-final getSearchUsersProvider = StreamProvider.family<List<UserModel>,String>((ref, String query) {
-if(query.isEmpty){
-  return Stream.value([]);
-}
-return ref.watch(userViewModelProvider).getSearchUsers(query);
+final getSearchUsersProvider =
+    StreamProvider.family<List<UserModel>, String>((ref, String query) {
+  if (query.isEmpty) {
+    return Stream.value([]);
+  }
+  return ref.watch(userViewModelProvider).getSearchUsers(query);
 });
 
 class UserViewModel {
@@ -34,9 +35,9 @@ class UserViewModel {
         .map((data) => data.map((e) => UserModel.fromMap(e.data())).toList());
   }
 
-  Future<UserModel> getUserById(String id) async {
-    final user = await _userRepository.getUserById(id);
-    return UserModel.fromMap(user.data()!);
+  Stream<UserModel> getUserById(String id) {
+    final user = _userRepository.getUserById(id);
+    return user.map((user) => UserModel.fromMap(user.data()!));
   }
 
   Stream<List<UserModel>> getSearchUsers(String query) {

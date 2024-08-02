@@ -75,11 +75,12 @@ class ChatViewModel extends StateNotifier<bool> {
         id: messageId,
         senderId: _auth.currentUser!.uid,
         content: content,
+        timestamp:  DateTime.now().millisecondsSinceEpoch.toString(),
         status: 'sent',
         type: 'text',
         contentUrl: '',
         reactions: {},
-        timestamp: Timestamp.now());
+       );
 
     final res =
         await _chatRepository.sendTextMessage(chatId, messageModel, messageId);
@@ -108,7 +109,7 @@ class ChatViewModel extends StateNotifier<bool> {
         id: messageId,
         senderId: _auth.currentUser!.uid,
         content: '',
-        timestamp: Timestamp.now(),
+        timestamp: DateTime.now().millisecondsSinceEpoch.toString(),
         status: 'sent',
         type: 'image',
         contentUrl: url ?? '',
@@ -119,10 +120,12 @@ class ChatViewModel extends StateNotifier<bool> {
         (r) => null);
   }
 
-  void addReactionToMessage(String messageId, String chatId, String reaction,
-     ) async {
-    _chatRepository.addReactionToMessage(
-        messageId, chatId, reaction);
+  void addReactionToMessage(
+    String messageId,
+    String chatId,
+    String reaction,
+  ) async {
+    _chatRepository.addReactionToMessage(messageId, chatId, reaction);
   }
 
   Future<void> sendVoiceMessage(String chatId, BuildContext context) async {
@@ -136,11 +139,12 @@ class ChatViewModel extends StateNotifier<bool> {
           id: uid,
           senderId: _auth.currentUser!.uid,
           content: '',
+        timestamp:    DateTime.now().millisecondsSinceEpoch.toString(),
           status: 'sent',
           type: 'voice',
           contentUrl: url ?? '',
           reactions: {},
-          timestamp: Timestamp.now());
+         );
       await _chatRepository.sendVoiceMessage(
           chatId, uid, voicePath, messageModel, context);
     }

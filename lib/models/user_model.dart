@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
   final String username;
@@ -6,7 +5,7 @@ class UserModel {
   final String password;
   final String uid;
   final String? profilePic;
-  final Timestamp lastSeen;
+  final String lastSeen;
   final bool isOnline;
 
   UserModel(
@@ -26,7 +25,7 @@ class UserModel {
       'uid': uid,
       'profilePic': profilePic,
       'isOnline': isOnline,
-      'lastSeen': lastSeen.toDate(),
+      'lastSeen': lastSeen,
     };
   }
 
@@ -38,7 +37,7 @@ class UserModel {
       uid: map['uid'] as String,
       profilePic: map['profilePic'] as String,
       isOnline: map['isOnline'] as bool,
-      lastSeen: map['lastSeen'] as Timestamp,
+      lastSeen: map['lastSeen'] as String,
     );
   }
 }

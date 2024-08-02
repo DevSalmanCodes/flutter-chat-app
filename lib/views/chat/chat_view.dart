@@ -51,6 +51,7 @@ class _ChatViewState extends ConsumerState<ChatView> {
       ref
           .watch(chatViewModelProvider.notifier)
           .sendImageMessage(widget.chatId, _file!, context);
+      _file = null;
     } else {
       if (message.isNotEmpty) {
         ref
@@ -109,7 +110,7 @@ class _ChatViewState extends ConsumerState<ChatView> {
                 : const NetworkImage(defaultProfilePic)),
         lastSeen: widget.userModel.isOnline
             ? 'Active now'
-            : 'Last seen: ${formatDate(widget.userModel.lastSeen)}',
+            : 'Last seen: ${formatDate(DateTime.fromMillisecondsSinceEpoch(int.parse(widget.userModel.lastSeen)))}',
       ),
       body: SizedBox(
         width: SizeConstants.width(context),
@@ -132,7 +133,9 @@ class _ChatViewState extends ConsumerState<ChatView> {
                         itemCount: data.length,
                         itemBuilder: (context, index) {
                           final message = data[index];
-                          final messageDate = message.timestamp.toDate();
+                          final messageDate =
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  int.parse(message.timestamp));
                           bool showDateHeader = false;
 
                           // Display the date header if it's the first message of the day or if the previous message was from a different day
@@ -140,7 +143,8 @@ class _ChatViewState extends ConsumerState<ChatView> {
                             showDateHeader = true;
                           } else {
                             final previousMessageDate =
-                                data[index - 1].timestamp.toDate();
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    int.parse(data[index - 1].timestamp));
                             if (messageDate.day != previousMessageDate.day ||
                                 messageDate.month !=
                                     previousMessageDate.month ||
@@ -152,7 +156,9 @@ class _ChatViewState extends ConsumerState<ChatView> {
                             children: [
                               if (showDateHeader)
                                 Text(
-                                  formatDate(message.timestamp),
+                                  formatDate(
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                          int.parse(message.timestamp))),
                                   style: TextStyleConstants.semiBoldTextStyle,
                                 ),
                               ChatBubble(

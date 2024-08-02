@@ -6,7 +6,6 @@ import 'package:chat_app/repositories/auth_repository.dart';
 import 'package:chat_app/repositories/user_repository.dart';
 import 'package:chat_app/utils/methods.dart';
 import 'package:chat_app/utils/routes/route_names.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +39,7 @@ class AuthViewModel extends StateNotifier<bool> {
       String? profilePicUrl;
       if (context.mounted && file != null) {
         profilePicUrl = await StorageMethods.uploadFileToFirebase(
-            file, 'profilePics',null, context);
+            file, 'profilePics', null, context);
       }
       UserModel userModel = UserModel(
           username: username,
@@ -49,7 +48,7 @@ class AuthViewModel extends StateNotifier<bool> {
           uid: _auth.currentUser!.uid,
           profilePic: profilePicUrl ?? '',
           isOnline: false,
-          lastSeen: Timestamp.now());
+          lastSeen: DateTime.now().millisecondsSinceEpoch.toString());
       final res2 = await _userRepository.storeUserData(
         userModel,
       );
@@ -76,9 +75,11 @@ class AuthViewModel extends StateNotifier<bool> {
     });
   }
 
-  void signOut() async {
+  void signOut(BuildContext context) async {
     state = true;
-    await _auth.signOut();
-    state = false;
+    await _auth.signOut().then((_) {
+      Navigator.pushReplacementNamed(context, RouteNames.login);
+      state = false;
+    });
   }
 }

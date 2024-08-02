@@ -7,11 +7,11 @@ import 'package:chat_app/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../widgets/chat_list_tile.dart';
-import '../../view_models.dart/user_view_model.dart';
+import '../../widgets/chat_list_tile.dart';
+import '../view_models.dart/user_view_model.dart';
 
-class ChatListView extends ConsumerWidget {
-  const ChatListView({super.key});
+class ChatList extends ConsumerWidget {
+  const ChatList({super.key});
 
   void _onNavigateToChatView(
     String chatId,
