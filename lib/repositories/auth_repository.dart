@@ -1,3 +1,4 @@
+import 'package:chat_app/constants/app_constants.dart';
 import 'package:chat_app/repositories/failure.dart';
 import 'package:chat_app/type_defs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,7 +31,7 @@ class AuthRepository implements IAuthRepository {
       );
       return right(res.user!);
     } on FirebaseAuthException catch (e, stackTrace) {
-      return left(Failure(e.message ?? 'Something went wrong', stackTrace.toString()));
+      return left(Failure(e.message ?? errorText, stackTrace.toString()));
     } catch (e, stackTrace) {
       return left(Failure(e.toString(), stackTrace.toString()));
     }
@@ -42,11 +43,10 @@ class AuthRepository implements IAuthRepository {
     try {
       final res = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      
 
       return right(res.user!);
     } on FirebaseAuthException catch (e, stackTrace) {
-      return left(Failure(e.message ?? 'Something went wrong', stackTrace.toString()));
+      return left(Failure(e.message ?? errorText, stackTrace.toString()));
     } catch (e, stackTrace) {
       return left(Failure(e.toString(), stackTrace.toString()));
     }
@@ -58,7 +58,7 @@ class AuthRepository implements IAuthRepository {
       await _firebaseAuth.signOut();
       return right(null);
     } on FirebaseAuthException catch (e, stackTrace) {
-      return left(Failure(e.message ?? 'Something went wrong', stackTrace.toString()));
+      return left(Failure(e.message ?? errorText, stackTrace.toString()));
     }
   }
 }

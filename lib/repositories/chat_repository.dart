@@ -1,7 +1,7 @@
+import 'package:chat_app/constants/app_constants.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/providers/general_providers.dart';
 import 'package:chat_app/repositories/failure.dart';
-import 'package:chat_app/tempCodeRunnerFile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -59,12 +59,7 @@ class ChatRepository implements IChatRepository {
   FutureEitherVoid sendTextMessage(
       String chatId, MessageModel messageModel, String docId) async {
     try {
-      await _firestore
-          .collection('chats')
-          .doc(chatId)
-          .collection('messages')
-          .doc(docId)
-          .set(messageModel.toMap());
+      await _sendMessage(chatId, docId, messageModel);
 
       _updateLastMessage(chatId, messageModel.content);
       return right(null);
@@ -113,19 +108,14 @@ class ChatRepository implements IChatRepository {
     } catch (e, st) {
       return left(Failure(e.toString(), st.toString()));
     }
-    return left(Failure('Something went wrong', ''));
+    return left(Failure(errorText, ''));
   }
 
   @override
   FutureEitherVoid sendImageMessage(
       String chatId, MessageModel messageModel, String docId) async {
     try {
-      await _firestore
-          .collection('chats')
-          .doc(chatId)
-          .collection('messages')
-          .doc(docId)
-          .set(messageModel.toMap());
+      await _sendMessage(chatId, docId, messageModel);
 
       _updateLastMessage(chatId, 'Photo');
       return right(null);
@@ -208,16 +198,21 @@ class ChatRepository implements IChatRepository {
     BuildContext context,
   ) async {
     try {
-      _firestore
-          .collection('chats')
-          .doc(chatId)
-          .collection('messages')
-          .doc(meessageId)
-          .set(messageModel.toMap());
+      await _sendMessage(chatId, meessageId, messageModel);
       _updateLastMessage(chatId, 'Voice Message');
       return right(null);
     } on FirebaseException catch (e, st) {
       return left(Failure(e.message, st.toString()));
     }
+  }
+
+  FutureVoid _sendMessage(
+      String chatId, String docId, MessageModel messageModel) async {
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(docId)
+        .set(messageModel.toMap());
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chat_app/constants/app_constants.dart';
 import 'package:chat_app/models/chat_model.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/providers/general_providers.dart';
@@ -71,21 +72,11 @@ class ChatViewModel extends StateNotifier<bool> {
   void sendTextMessage(
       String chatId, String content, BuildContext context) async {
     final messageId = const Uuid().v4();
-    MessageModel messageModel = MessageModel(
-        id: messageId,
-        senderId: _auth.currentUser!.uid,
-        content: content,
-        timestamp:  DateTime.now().millisecondsSinceEpoch.toString(),
-        status: 'sent',
-        type: 'text',
-        contentUrl: '',
-        reactions: {},
-       );
+    final messageModel = _sendMessage(messageId, '', 'text', content);
 
     final res =
         await _chatRepository.sendTextMessage(chatId, messageModel, messageId);
-    res.fold((l) => showSnackBar(context, l.message ?? 'Something went wrong'),
-        (r) => null);
+    res.fold((l) => showSnackBar(context, l.message ?? errorText), (r) => null);
   }
 
   Stream<List<ChatModel>> getAllChats(String uid) {
@@ -105,19 +96,10 @@ class ChatViewModel extends StateNotifier<bool> {
       null,
       context,
     );
-    MessageModel messageModel = MessageModel(
-        id: messageId,
-        senderId: _auth.currentUser!.uid,
-        content: '',
-        timestamp: DateTime.now().millisecondsSinceEpoch.toString(),
-        status: 'sent',
-        type: 'image',
-        contentUrl: url ?? '',
-        reactions: {});
+    final messageModel = _sendMessage(messageId, url ?? '', 'image', '');
     final res =
         await _chatRepository.sendImageMessage(chatId, messageModel, messageId);
-    res.fold((l) => showSnackBar(context, l.message ?? 'Something went wrong'),
-        (r) => null);
+    res.fold((l) => showSnackBar(context, l.message ?? errorText), (r) => null);
   }
 
   void addReactionToMessage(
@@ -135,16 +117,7 @@ class ChatViewModel extends StateNotifier<bool> {
     if (voicePath != null) {
       final url = await StorageMethods.uploadFileToFirebase(
           null, '', File(voicePath), context);
-      final MessageModel messageModel = MessageModel(
-          id: uid,
-          senderId: _auth.currentUser!.uid,
-          content: '',
-        timestamp:    DateTime.now().millisecondsSinceEpoch.toString(),
-          status: 'sent',
-          type: 'voice',
-          contentUrl: url ?? '',
-          reactions: {},
-         );
+      final messageModel = _sendMessage(uid, url ?? '', 'voice', '');
       await _chatRepository.sendVoiceMessage(
           chatId, uid, voicePath, messageModel, context);
     }
@@ -177,5 +150,19 @@ class ChatViewModel extends StateNotifier<bool> {
 
   Future<bool> isRecording() async {
     return await _recorder.isRecording();
+  }
+
+  MessageModel _sendMessage(
+      String uid, String url, String type, String content) {
+    return MessageModel(
+      id: uid,
+      senderId: _auth.currentUser!.uid,
+      content: content,
+      timestamp: DateTime.now().millisecondsSinceEpoch.toString(),
+      status: 'sent',
+      type: type,
+      contentUrl: url,
+      reactions: {},
+    );
   }
 }
