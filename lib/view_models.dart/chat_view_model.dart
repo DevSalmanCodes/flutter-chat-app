@@ -162,7 +162,7 @@ class ChatViewModel extends StateNotifier<bool> {
   }
 
   Future<String?> _stopRecording() async {
-    if (await _recorder.isRecording()) {
+    if (await isRecording()) {
       final outputPath = await _recorder.stop();
       state = false;
       return outputPath;

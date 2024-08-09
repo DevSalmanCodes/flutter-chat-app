@@ -14,13 +14,13 @@ import '../constants/text_style_constants.dart';
 class ChatBubble extends ConsumerWidget {
   final bool isSender;
   final MessageModel messageModel;
-  final String currentUseUid;
+  final String currentUserUid;
   final String chatId;
   const ChatBubble({
     super.key,
     required this.isSender,
     required this.messageModel,
-    required this.currentUseUid,
+    required this.currentUserUid,
     required this.chatId,
   });
 
@@ -43,10 +43,12 @@ class ChatBubble extends ConsumerWidget {
                     margin: EdgeInsets.only(
                         top: 10.0,
                         bottom: 10.0,
-                        left:
-                            isSender ? SizeConstants.smallPadding + 60.0 : 6.0,
-                        right:
-                            isSender ? 6.0 : SizeConstants.smallPadding + 10),
+                        left: isSender
+                            ? SizeConstants.smallPadding + 60.0
+                            : SizeConstants.smallPadding - 2.0,
+                        right: isSender
+                            ? SizeConstants.smallPadding - 2.0
+                            : SizeConstants.smallPadding + 10),
                     padding:
                         const EdgeInsets.all(SizeConstants.smallPadding + 4.0),
                     decoration: BoxDecoration(
@@ -55,27 +57,28 @@ class ChatBubble extends ConsumerWidget {
                             : ColorConstants.receiverChatColor,
                         borderRadius: BorderRadius.circular(12.0)),
                     child: messageModel.type == 'text'
-                        ? _buildRow(messageModel, currentUseUid)
+                        ? _buildTextWidget(messageModel, currentUserUid)
                         : messageModel.type == 'voice'
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  VoiceMessageView(
-                                      controller: VoiceController(
-                                          audioSrc: messageModel.contentUrl,
-                                          maxDuration:
-                                              const Duration(minutes: 5),
-                                          isFile: false,
-                                          onComplete: () {},
-                                          onPause: () {},
-                                          onPlaying: () {})),
-                                  if (messageModel.senderId == currentUseUid)
+                                  if (messageModel.contentUrl.isNotEmpty)
+                                    VoiceMessageView(
+                                        controller: VoiceController(
+                                            audioSrc: messageModel.contentUrl,
+                                            maxDuration:
+                                                const Duration(minutes: 5),
+                                            isFile: false,
+                                            onComplete: () {},
+                                            onPause: () {},
+                                            onPlaying: () {})),
+                                  if (messageModel.senderId == currentUserUid)
                                     ..._messageStatusWidget(messageModel,
                                         height: 4.0)
                                 ],
                               )
-                            : _buildColumn(
-                                context, messageModel, currentUseUid),
+                            : _buildImageWidget(
+                                context, messageModel, currentUserUid),
                   ),
                   Positioned(
                     bottom: 0,
@@ -128,7 +131,7 @@ void _showReactionPicker(BuildContext context, String messageId, String chatId,
   );
 }
 
-Widget _buildColumn(
+Widget _buildImageWidget(
     BuildContext context, MessageModel messageModel, String currentUserUid) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.end,
@@ -150,7 +153,7 @@ Widget _buildColumn(
   );
 }
 
-Widget _buildRow(MessageModel messageModel, String currentUserUid) {
+Widget _buildTextWidget(MessageModel messageModel, String currentUserUid) {
   return Row(
     children: [
       Flexible(

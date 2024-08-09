@@ -1,14 +1,14 @@
 import 'package:chat_app/utils/routes/route_names.dart';
-import 'package:chat_app/views/auth/sign_up_view.dart';
-import 'package:chat_app/views/home/home_view.dart';
+import 'package:chat_app/views/sign_up_view.dart';
+import 'package:chat_app/views/home_view.dart';
 import 'package:chat_app/views/photo_view.dart';
 import 'package:chat_app/views/search_view.dart';
 import 'package:chat_app/views/splash_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_model.dart';
-import '../../views/auth/login_view.dart';
-import '../../views/chat/chat_view.dart';
+import '../../views/login_view.dart';
+import '../../views/chat_view.dart';
 
 class AppRoutes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

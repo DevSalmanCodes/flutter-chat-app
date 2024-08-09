@@ -10,10 +10,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../constants/size_constants.dart';
-import '../../constants/text_style_constants.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_text_field.dart';
+import '../constants/size_constants.dart';
+import '../constants/text_style_constants.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_text_field.dart';
 
 class SignUpView extends ConsumerStatefulWidget {
   const SignUpView({super.key});

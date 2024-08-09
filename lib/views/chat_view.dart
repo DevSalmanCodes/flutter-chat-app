@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:record/record.dart';
 
-import '../../utils/date_time.dart';
+import '../utils/date_time.dart';
 
 class ChatView extends ConsumerStatefulWidget {
   final String chatId;
@@ -122,7 +122,10 @@ class _ChatViewState extends ConsumerState<ChatView> {
             ),
             messagesAsyncValue.when(
                 data: (data) {
-                  data.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+                  data.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(
+                          int.parse(a.timestamp))
+                      .compareTo(DateTime.fromMillisecondsSinceEpoch(
+                          int.parse(b.timestamp))));
                   _jumpToLatestMessage();
                   return Expanded(
                     flex: 6,
@@ -164,7 +167,7 @@ class _ChatViewState extends ConsumerState<ChatView> {
                               ChatBubble(
                                 isSender: message.senderId == currentUserUid,
                                 messageModel: message,
-                                currentUseUid: currentUserUid,
+                                currentUserUid: currentUserUid,
                                 chatId: widget.chatId,
                               ),
                             ],

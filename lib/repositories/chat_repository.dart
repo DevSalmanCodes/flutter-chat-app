@@ -1,6 +1,7 @@
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/providers/general_providers.dart';
 import 'package:chat_app/repositories/failure.dart';
+import 'package:chat_app/tempCodeRunnerFile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +96,8 @@ class ChatRepository implements IChatRepository {
       final batch = _firestore.batch();
 
       for (var doc in messagesDocs.docs) {
-        if (doc.data()['senderId'] != _auth.currentUser!.uid) {
+        if (doc.data()['senderId'] != _auth.currentUser!.uid &&
+            doc.data()['status'] != 'seen') {
           batch.update(
               _firestore
                   .collection('chats')
@@ -157,43 +159,44 @@ class ChatRepository implements IChatRepository {
         .collection('messages')
         .doc(messageId);
     final doc = await docRef.get();
+
     final docData = doc.data();
-    final reactions = (docData!['reactions'] as Map<String, dynamic>).map(
+    if (docData == null || !docData.containsKey('reactions')) return;
+
+    final reactions = (docData['reactions'] as Map<String, dynamic>).map(
       (key, value) => MapEntry(
         key,
         List<String>.from(value as List<dynamic>),
       ),
     );
     final currentUserUid = _auth.currentUser!.uid;
-    // Check if the reaction is already exists
+    bool isUpdated = false;
     if (reactions.containsKey(reaction)) {
-      if (!reactions[reaction]!.contains(currentUserUid)) {
-        reactions[reaction]!.add(currentUserUid);
+      final userList = reactions[reaction]!;
+      if (!userList.contains(currentUserUid)) {
+        userList.add(currentUserUid);
+        isUpdated = true;
       } else {
-        reactions[reaction]!.remove(currentUserUid);
-        // After removing the user id check if the current reaction list is empty if empty remove the reaction also
-        if (_isListEmpty(reactions[reaction]!)) {
+        userList.remove(currentUserUid);
+        if (userList.isEmpty) {
           reactions.remove(reaction);
         }
+        isUpdated = true;
       }
     } else {
       // Loop through all reactions if the current user uid found in any list remove it first and then add new reaction
-      for (var i = 0; i < reactions.keys.length; i++) {
-        final currentValue = reactions.values.elementAt(i);
-
-        if (currentValue.contains(currentUserUid)) {
-          currentValue.remove(currentUserUid);
-          if (_isListEmpty(currentValue)) {
-            final currentKey = reactions.keys.elementAt(i);
-            reactions.remove(currentKey);
-          }
+      reactions.forEach((key, value) {
+        if (value.contains(currentUserUid)) {
+          value.remove(currentUserUid);
         }
-      }
-
+      });
+      reactions.removeWhere((key, value) => value.isEmpty);
       reactions[reaction] = [currentUserUid];
+      isUpdated = true;
     }
-    docRef.update({'reactions': reactions});
-    reactions.clear();
+    if (isUpdated) {
+      docRef.update({'reactions': reactions});
+    }
   }
 
   @override
@@ -216,9 +219,5 @@ class ChatRepository implements IChatRepository {
     } on FirebaseException catch (e, st) {
       return left(Failure(e.message, st.toString()));
     }
-  }
-
-  bool _isListEmpty(List reactionList) {
-    return reactionList.isEmpty;
   }
 }
